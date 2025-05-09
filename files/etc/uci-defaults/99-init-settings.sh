@@ -82,7 +82,7 @@ if grep -q "Raspberry Pi" /proc/cpuinfo; then
   uci set wireless.@wifi-iface[1].ssid='XIDZs-WRT_5G'
   uci set wireless.@wifi-iface[1].encryption='none'
 else
-  uci set wireless.@wifi-device[0].channel='7'
+  uci set wireless.@wifi-device[0].channel='9'
   uci set wireless.@wifi-iface[0].ssid='XIDZs-WRT'
 fi
 uci commit wireless
@@ -174,16 +174,12 @@ echo "restart netdata and vnstat"
 sleep 2
 /etc/init.d/vnstat restart
 
-# no tunnel
-found=0
-
-# cek tunnel installed
-echo "luci-app-openclash luci-app-nikki luci-app-passwall" | tr ' ' '\n' | while read pkg; do
+# setup tunnel installed
+for pkg in luci-app-openclash luci-app-nikki luci-app-passwall; do
   if opkg list-installed | grep -qw "$pkg"; then
-    found=1
+    echo "$pkg detected"
     case "$pkg" in
       luci-app-openclash)
-        echo "openclash detected"
         chmod +x /etc/openclash/core/clash_meta
         chmod +x /etc/openclash/Country.mmdb
         chmod +x /etc/openclash/Geo* 2>/dev/null
@@ -196,53 +192,46 @@ echo "luci-app-openclash luci-app-nikki luci-app-passwall" | tr ' ' '\n' | while
         rm -rf /etc/openclash/custom /etc/openclash/game_rules
         rm -f /usr/share/openclash/openclash_version.sh
         find /etc/openclash/rule_provider -type f ! -name "*.yaml" -exec rm -f {} \;
-        mv /etc/config/openclash1 /etc/config/openclash 2>/dev/null
+        mv /etc/config/openclash1 /etc/config/openclash 2>/dev/null           
         ;;
       luci-app-nikki)
-        echo "nikki detected"
         rm -rf /etc/nikki/run/providers
         chmod +x /etc/nikki/run/Geo* 2>/dev/null
-        echo "symlink nikki and openclash"
+        echo "symlink nikki to openclash"
         ln -s /etc/openclash/proxy_provider /etc/nikki/run
         ln -s /etc/openclash/rule_provider /etc/nikki/run
+        sed -i -e '64s/'Enable'/'Disable'/' /etc/config/alpha
+        sed -i -e '170s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
         ;;
       luci-app-passwall)
-        echo "passwall detected"
-        sed -i 's|modem/3ginfo-lite|services/passwall|g' /usr/lib/lua/luci/view/themes/argon/header.htm
-        sed -i 's|modem|passwall|g' /usr/lib/lua/luci/view/themes/argon/header.htm
-        sed -i 's|modem/3ginfo-lite|services/passwall|g' /etc/config/alpha
-        sed -i 's|modem|passwall|g' /etc/config/alpha
+        sed -i -e '88s/'Enable'/'Disable'/' /etc/config/alpha
+        sed -i -e '171s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
         ;;
     esac
   else
+    echo "$pkg no detected"
     case "$pkg" in
       luci-app-openclash)
-        echo "openclash no detected"
         rm -f /etc/config/openclash1
         rm -rf /etc/openclash /usr/share/openclash /usr/lib/lua/luci/view/openclash
+        sed -i -e '104s/'Enable'/'Disable'/' /etc/config/alpha
+        sed -i -e '167s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
+        sed -i -e '187s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
+        sed -i -e '189s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
         ;;
       luci-app-nikki)
-        echo "nikki no detected"
         rm -rf /etc/config/nikki /etc/nikki
-        sed -i -e '136s/'Enable'/'Disable'/' /etc/config/alpha
+        sed -i -e '120s/'Enable'/'Disable'/' /etc/config/alpha
         sed -i -e '168s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
         ;;
       luci-app-passwall)
-        echo "passwall no detected"
         rm -f /etc/config/passwall
+        sed -i -e '136s/'Enable'/'Disable'/' /etc/config/alpha
+        sed -i -e '169s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
         ;;
     esac
   fi
 done
-
-# no tunnel detected
-if ! opkg list-installed | grep -qw 'luci-app-openclash\|luci-app-nikki\|luci-app-passwall'; then
-  echo "no tunnels detected ( openclash, nikki, passwall not installed )"
-  sed -i -e '104s/'Enable'/'Disable'/' /etc/config/alpha
-  sed -i -e '167s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
-  sed -i -e '185s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
-  sed -i -e '187s#.*#<!-- & -->#' /usr/lib/lua/luci/view/themes/argon/header.htm
-fi
 
 # remove storage.js
 echo "remove storage.js"
