@@ -179,7 +179,7 @@ jobs:
             - Default password: xyyraa
             - Default WIFI name: XIDZs-WRT | XIDZs-WRT_5G
             - Default WIFI password: none
-            - Disarankan !!! Harap Reboot Device Setelah Booting
+            - Disarankan !!! Reboot Device Setelah Booting Atau Masuk Luci
             ## FITUR - FITUR ##
             - Tema Alpha
             - Tema Argon
@@ -207,11 +207,11 @@ jobs:
             - Amlogic s905x2
             - Amlogic s905x3
             - Amlogic s905x4
-            ## KERNEL - STABLE ##
-            - Kernel v5.15.x | WIFI ON
-            - Kernel v6.1.x  | WIFI ON
-            - Kernel v6.6.x  | WIFI ON
-            - Kernel v6.12.x | WIFI OFF
+            ## KERNEL - INFORMATION ##
+            - Kernel 5.15.x | WIFI ON
+            - Kernel 6.1.x  | WIFI ON
+            - Kernel 6.6.x  | WIFI ON
+            - Kernel 6.12.x | WIFI OFF
             ## VARIASI TUNNEL ##
             - OPENCLASH
             - OPENCLASH | NIKKI
