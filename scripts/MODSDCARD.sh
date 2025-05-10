@@ -110,7 +110,7 @@ build_mod_sdcard() {
 
     local kernel
     kernel=$(grep -oP 'k[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?' <<<"$file_name")
-    local new_name="${OP_BASE}-${BRANCH}-Mod_SDCard-${suffix}-${kernel}-${TUNNEL}-By-Xidz_x.img.gz.img.gz"
+    local new_name="${OP_BASE}-${BRANCH}-Mod_SDCard-${suffix}-${kernel}-${TUNNEL}-By-Xidz_x.img.gz"
     mv "${file_name}.gz" "../${new_name}" || return 1
 
     cd ..
@@ -153,13 +153,13 @@ get_builds_for_target() {
     case "$MATRIXTARGET" in
         "Amlogic s905x HG680P")
             dtb="meson-gxl-s905x-p212.dtb"
-            label="Amlogic-s905x-HG680P"
-            prefix="_s905x_"
+            label="HG680P"
+            prefix="_s905x"
             ;;
         "Amlogic s905x B860H")
             dtb="meson-gxl-s905x-b860h.dtb"
-            label="Amlogic-s905x-B860H"
-            prefix="_s905x-b860h_"
+            label="B860H"
+            prefix="_s905x-b860h"
             ;;
         *)
             log "ERROR" "Unsupported MATRIXTARGET: $MATRIXTARGET"
