@@ -192,22 +192,20 @@ main() {
     
     # Configuration array with format device:dtb:model
     local builds=()
-    case $MATRIXTARGET in
-        "Amlogic s905x HG680P")
-            builds=(
-                "_s905x_k5.15:meson-gxl-s905x-p212.dtb:HG680P"
-                "_s905x_k6.1:meson-gxl-s905x-p212.dtb:HG680P"
-                "_s905x_k6.6:meson-gxl-s905x-p212.dtb:HG680P"
-            )
-            ;;
-        "Amlogic s905x B860H")
-            builds=(
-                "_s905x-b860h_k5.15:meson-gxl-s905x-b860h.dtb:B860H"
-                "_s905x-b860h_k6.1:meson-gxl-s905x-b860h.dtb:B860H"
-                "_s905x-b860h_k6.6:meson-gxl-s905x-b860h.dtb:B860H"
-            )
-            ;;
-    esac
+    local kernels=("5.15" "6.1" "6.6")
+
+case $MATRIXTARGET in
+    "Amlogic s905x HG680P")
+        for kernel in "${kernels[@]}"; do
+            builds+=("_s905x_k$kernel:meson-gxl-s905x-p212.dtb:HG680P")
+        done
+        ;;
+    "Amlogic s905x B860H")
+        for kernel in "${kernels[@]}"; do
+            builds+=("_s905x-b860h_k$kernel:meson-gxl-s905x-b860h.dtb:B860H")
+        done
+        ;;
+esac
     
     # Validate environment
     if [[ ! -d "$img_dir" ]]; then
