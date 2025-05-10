@@ -147,24 +147,37 @@ process_builds() {
 }
 
 get_builds_for_target() {
+    local dtb=""
+    local label=""
+    local kernel_prefix=""
+
     case "$MATRIXTARGET" in
-        "OPHUB Amlogic s905X HG680P"|"ULO Amlogic s905X HG680P")
-            echo "_s905x_k5.15:meson-gxl-s905x-p212.dtb:HG680P"
-            echo "_s905x_k6.1:meson-gxl-s905x-p212.dtb:HG680P"
-            echo "_s905x_k6.6:meson-gxl-s905x-p212.dtb:HG680P"
-            echo "-s905x-:meson-gxl-s905x-p212.dtb:HG680P"
+        "OPHUB Amlogic s905x HG680P"|"ULO Amlogic s905x HG680P")
+            dtb="meson-gxl-s905x-p212.dtb"
+            label="HG680P"
+            kernel_prefix="_s905x"
             ;;
-        "OPHUB Amlogic s905X B860H"|"ULO Amlogic s905X B860H")
-            echo "_s905x-b860h_k5.15:meson-gxl-s905x-b860h.dtb:B860H"
-            echo "_s905x-b860h_k6.1:meson-gxl-s905x-b860h.dtb:B860H"
-            echo "_s905x-b860h_k6.6:meson-gxl-s905x-b860h.dtb:B860H"
-            echo "-s905x-:meson-gxl-s905x-b860h.dtb:B860H"
+        "OPHUB Amlogic s905x B860H"|"ULO Amlogic s905x B860H")
+            dtb="meson-gxl-s905x-b860h.dtb"
+            label="B860H"
+            kernel_prefix="_s905x-b860h"
             ;;
         *)
             log "ERROR" "Unsupported MATRIXTARGET: $MATRIXTARGET"
             return 1
             ;;
     esac
+
+    local kernels=(
+        "${kernel_prefix}_k5.15"
+        "${kernel_prefix}_k6.1"
+        "${kernel_prefix}_k6.6"
+        "-s905x-"
+    )
+
+    for kernel in "${kernels[@]}"; do
+        echo "${kernel}:${dtb}:${label}"
+    done
 }
 
 main() {
