@@ -147,20 +147,19 @@ process_builds() {
 }
 
 get_builds_for_target() {
-    local dtb=""
-    local label=""
-    local kernel_prefix=""
+    local dtb label prefix
+    local kernels=("_k5.15" "_k6.1" "_k6.6" "-s905x-")
 
     case "$MATRIXTARGET" in
-        "OPHUB Amlogic s905x HG680P"|"ULO Amlogic s905x HG680P")
+        "Amlogic s905x HG680P")
             dtb="meson-gxl-s905x-p212.dtb"
             label="HG680P"
-            kernel_prefix="_s905x"
+            prefix="_s905x"
             ;;
-        "OPHUB Amlogic s905x B860H"|"ULO Amlogic s905x B860H")
+        "Amlogic s905x B860H")
             dtb="meson-gxl-s905x-b860h.dtb"
             label="B860H"
-            kernel_prefix="_s905x-b860h"
+            prefix="_s905x-b860h"
             ;;
         *)
             log "ERROR" "Unsupported MATRIXTARGET: $MATRIXTARGET"
@@ -168,15 +167,8 @@ get_builds_for_target() {
             ;;
     esac
 
-    local kernels=(
-        "${kernel_prefix}_k5.15"
-        "${kernel_prefix}_k6.1"
-        "${kernel_prefix}_k6.6"
-        "-s905x-"
-    )
-
-    for kernel in "${kernels[@]}"; do
-        echo "${kernel}:${dtb}:${label}"
+    for k in "${kernels[@]}"; do
+        echo "${prefix}${k}:${dtb}:${label}"
     done
 }
 
