@@ -148,18 +148,18 @@ process_builds() {
 
 get_builds_for_target() {
     local dtb label prefix
-    local kernels=("_k5.15" "_k6.1" "_k6.6" "-s905x-")
+    local kernels=("_k5.15" "_k6.1" "_k6.6")
 
     case "$MATRIXTARGET" in
         "Amlogic s905x HG680P")
             dtb="meson-gxl-s905x-p212.dtb"
             label="HG680P"
-            prefix="_s905x"
+            prefix="_s905x_"
             ;;
         "Amlogic s905x B860H")
             dtb="meson-gxl-s905x-b860h.dtb"
             label="B860H"
-            prefix="_s905x-b860h"
+            prefix="_s905x-b860h_"
             ;;
         *)
             log "ERROR" "Unsupported MATRIXTARGET: $MATRIXTARGET"
