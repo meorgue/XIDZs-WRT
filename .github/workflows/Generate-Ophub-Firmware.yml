@@ -14,6 +14,7 @@ on:
           - openwrt:24.10.3
           - openwrt:24.10.4
           - openwrt:23.05.5
+          - immortalwrt:24.10.0
           - immortalwrt:24.10.1
           - immortalwrt:24.10.2
           - immortalwrt:24.10.3
