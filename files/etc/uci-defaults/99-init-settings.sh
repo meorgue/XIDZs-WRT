@@ -64,92 +64,46 @@ delete dhcp.lan.ndp
 EOF
 uci commit dhcp
 
-# Cek apakah perangkat adalah Raspberry Pi 3B atau 4B
-if grep -q "Raspberry Pi [34]" /proc/cpuinfo; then
-    echo "Raspberry Pi 3B/4B terdeteksi - Mengkonfigurasi WiFi 2.4GHz dan 5GHz"
-    
-    # Reset konfigurasi wireless
-    uci -q delete wireless
-    
-    # Konfigurasi radio 2.4GHz
-    uci set wireless.radio0=wifi-device
-    uci set wireless.radio0.type='mac80211'
-    uci set wireless.radio0.band='2g'
-    uci set wireless.radio0.channel='auto'
-    uci set wireless.radio0.disabled='0'
-    
-    # Konfigurasi interface 2.4GHz
-    uci set wireless.default_radio0=wifi-iface
-    uci set wireless.default_radio0.device='radio0'
-    uci set wireless.default_radio0.network='lan'
-    uci set wireless.default_radio0.mode='ap'
-    uci set wireless.default_radio0.ssid='XIDZs-WRT'
-    uci set wireless.default_radio0.encryption='none'
-    
-    # Konfigurasi radio 5GHz
-    uci set wireless.radio1=wifi-device
-    uci set wireless.radio1.type='mac80211'
-    uci set wireless.radio1.band='5g'
-    uci set wireless.radio1.channel='149'
-    uci set wireless.radio1.disabled='0'
-    
-    # Konfigurasi interface 5GHz
-    uci set wireless.default_radio1=wifi-iface
-    uci set wireless.default_radio1.device='radio1'
-    uci set wireless.default_radio1.network='lan'
-    uci set wireless.default_radio1.mode='ap'
-    uci set wireless.default_radio1.ssid='XIDZs-WRT_5G'
-    uci set wireless.default_radio1.encryption='none'
-    
-    # Commit perubahan
-    uci commit wireless
-    
-    # Tambahkan script startup dan pemeliharaan WiFi
-    if ! grep -q "wifi up" /etc/rc.local; then
-        sed -i '/exit 0/i # WiFi startup for Raspberry Pi' /etc/rc.local
-        sed -i '/exit 0/i sleep 15 && wifi up' /etc/rc.local
-    fi
-    
-    # Tambahkan cron job untuk restart WiFi secara berkala
-    if ! grep -q "wifi up" /etc/crontabs/root; then
-        echo "# WiFi maintenance for Raspberry Pi" >> /etc/crontabs/root
-        echo "0 */6 * * * wifi down && sleep 10 && wifi up" >> /etc/crontabs/root
-        /etc/init.d/cron restart
-    fi
-    
-    # Restart WiFi
-    wifi reload
-    
-    echo "WiFi 2.4GHz dan 5GHz dikonfigurasi dengan sukses untuk Raspberry Pi"
+# configure wiireless device
+echo "configure wireless 2.4Ghz"
+uci set wireless.@wifi-device[0].disabled='0'
+uci set wireless.@wifi-iface[0].disabled='0'
+uci set wireless.@wifi-device[0].country='ID'
+uci set wireless.@wifi-device[0].htmode='HT40'
+uci set wireless.@wifi-iface[0].mode='ap'
+uci set wireless.@wifi-iface[0].encryption='none'
+
+# configure wireless Raspberry Pi
+if ! grep -q "Raspberry Pi [34]" /proc/cpuinfo; then
+  echo "device Raspberry Pi [34] detected"
+  uci set wireless.@wifi-device[1].disabled='0'
+  uci set wireless.@wifi-iface[1].disabled='0'
+  uci set wireless.@wifi-device[1].country='ID'
+  uci set wireless.@wifi-device[1].channel='149'
+  uci set wireless.@wifi-device[1].htmode='VHT80'
+  uci set wireless.@wifi-iface[1].mode='ap'
+  uci set wireless.@wifi-iface[1].ssid='XIDZs-WRT_5G'
+  uci set wireless.@wifi-iface[1].encryption='none'
 else
-    echo "Bukan Raspberry Pi 3B/4B - Hanya mengkonfigurasi WiFi 2.4GHz"
-    
-    # Reset konfigurasi wireless
-    uci -q delete wireless
-    
-    # Konfigurasi radio 2.4GHz
-    uci set wireless.radio0=wifi-device
-    uci set wireless.radio0.type='mac80211'
-    uci set wireless.radio0.band='2g'
-    uci set wireless.radio0.channel='auto'
-    uci set wireless.radio0.disabled='0'
-    
-    # Konfigurasi interface 2.4GHz
-    uci set wireless.default_radio0=wifi-iface
-    uci set wireless.default_radio0.device='radio0'
-    uci set wireless.default_radio0.network='lan'
-    uci set wireless.default_radio0.mode='ap'
-    uci set wireless.default_radio0.ssid='OpenWrt_2G'
-    uci set wireless.default_radio0.encryption='psk2'
-    uci set wireless.default_radio0.key='password123'
-    
-    # Commit perubahan
-    uci commit wireless
-    
-    # Restart WiFi
-    wifi reload
-    
-    echo "WiFi 2.4GHz dikonfigurasi dengan sukses"
+  uci set wireless.@wifi-device[0].channel='5'
+  uci set wireless.@wifi-iface[0].ssid='XIDZs-WRT'
+fi
+uci commit wireless
+wifi reload && wifi up
+if iw dev | grep -q Interface; then
+  if ! grep -q "Raspberry Pi [34]" /proc/cpuinfo; then
+    if ! grep -q "wifi up" /etc/rc.local; then
+      sed -i '/exit 0/i # remove if you dont use wireless' /etc/rc.local
+      sed -i '/exit 0/i sleep 10 && wifi up' /etc/rc.local
+    fi
+    if ! grep -q "wifi up" /etc/crontabs/root; then
+      echo "# remove if you dont use wireless" >> /etc/crontabs/root
+      echo "0 */12 * * * wifi down && sleep 5 && wifi up" >> /etc/crontabs/root
+      service cron restart
+    fi
+  fi
+else
+  echo "no wireless device detected."
 fi
 
 # remove huawei me909s and dw5821e usb-modeswitch"
