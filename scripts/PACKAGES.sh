@@ -44,7 +44,7 @@ packages_custom+=(
     "luci-app-speedtest-web_|${REPOS[KIDDIN9]}"
     "luci-app-fancontrol_|${REPOS[KIDDIN9]}"
     "luci-app-atcommands_|${REPOS[KIDDIN9]}"
-    "tailscale_1|${REPOS[KIDDIN9]}"
+    "tailscale_|${REPOS[KIDDIN9]}"
     
     "luci-app-oled_|${REPOS[KIDDIN9]}"
     "modemband_|${REPOS[IMMORTALWRT]}/packages"
