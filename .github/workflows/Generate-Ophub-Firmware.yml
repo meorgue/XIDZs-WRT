@@ -548,7 +548,7 @@ jobs:
           
       - name: Mod SDCard
         id: modsdcard
-        if: steps.rep.outputs.status == 'success'
+        if: steps.repack.outputs.status == 'success'
         run: |
           cd ${WORKING_DIR}
           chmod +x scripts/MODSDCARD.sh
