@@ -64,43 +64,77 @@ delete dhcp.lan.ndp
 EOF
 uci commit dhcp
 
-# configure Wireless
-echo "configure wireless"
+# configure wireless
+echo "Configure Wireless"
 uci set wireless.@wifi-device[0].disabled='0'
 uci set wireless.@wifi-iface[0].disabled='0'
 uci set wireless.@wifi-device[0].country='ID'
+uci set wireless.@wifi-device[0].channel='7'
 uci set wireless.@wifi-device[0].htmode='HT40'
 uci set wireless.@wifi-iface[0].mode='ap'
+uci set wireless.@wifi-iface[0].ssid='XIDZs-WRT'
 uci set wireless.@wifi-iface[0].encryption='none'
+
 if grep -q "Raspberry Pi" /proc/cpuinfo; then
-  uci set wireless.@wifi-device[1].disabled='0'
-  uci set wireless.@wifi-iface[1].disabled='0'
-  uci set wireless.@wifi-device[1].country='ID'
-  uci set wireless.@wifi-device[1].channel='149'
-  uci set wireless.@wifi-device[1].htmode='VHT80'
-  uci set wireless.@wifi-iface[1].mode='ap'
-  uci set wireless.@wifi-iface[1].ssid='XIDZs-WRT_5G'
-  uci set wireless.@wifi-iface[1].encryption='none'
-else
-  uci set wireless.@wifi-device[0].channel='9'
-  uci set wireless.@wifi-iface[0].ssid='XIDZs-WRT'
-fi
-uci commit wireless
-wifi reload && wifi up
-if iw dev | grep -q Interface; then
-  if grep -q "Raspberry Pi" /proc/cpuinfo; then
-    if ! grep -q "wifi up" /etc/rc.local; then
-      sed -i '/exit 0/i # remove if you dont use wireless' /etc/rc.local
-      sed -i '/exit 0/i sleep 10 && wifi up' /etc/rc.local
+  MODEL=$(cat /proc/cpuinfo | grep "Model" | grep -o "Raspberry Pi [3-4]")
+  
+  if echo "$MODEL" | grep -q "Raspberry Pi [3-4]"; then
+    echo "Detected $MODEL - Enabling 5GHz WiFi"
+    
+    uci set wireless.@wifi-device[1].disabled='0'
+    uci set wireless.@wifi-iface[1].disabled='0'
+    uci set wireless.@wifi-device[1].country='ID'
+    uci set wireless.@wifi-iface[1].ssid='XIDZs-WRT_5G'
+    uci set wireless.@wifi-iface[1].mode='ap'
+    uci set wireless.@wifi-iface[1].encryption='none'
+    
+    if echo "$MODEL" | grep -q "Raspberry Pi 4"; then
+      uci set wireless.@wifi-device[1].channel='149'
+      uci set wireless.@wifi-device[1].htmode='VHT80'
+    else
+      uci set wireless.@wifi-device[1].channel='36'
+      uci set wireless.@wifi-device[1].htmode='VHT40'
     fi
-    if ! grep -q "wifi up" /etc/crontabs/root; then
-      echo "# remove if you dont use wireless" >> /etc/crontabs/root
-      echo "0 */12 * * * wifi down && sleep 5 && wifi up" >> /etc/crontabs/root
-      service cron restart
-    fi
+  else
+    echo "No Detected Raspberry 3B/4B 5GHz WiFi not enabled"
   fi
 else
-  echo "no wireless device detected."
+  echo "Not Raspberry Pi device"
+fi
+
+uci commit wireless
+
+if iw dev | grep -q Interface; then
+    echo "Wireless interfaces detected and running"
+    
+    if grep -q "Raspberry Pi" /proc/cpuinfo; then
+        PI_MODEL=$(cat /proc/cpuinfo | grep "Model" | grep -o "Raspberry Pi [34]")
+        
+        if echo "$PI_MODEL" | grep -q "Raspberry Pi [34]"; then
+            echo "Detected $PI_MODEL - Configuring WiFi startup and maintenance"
+            
+            if ! grep -q "wifi up" /etc/rc.local; then
+                echo "Adding wireless startup script to rc.local"
+                sed -i '/exit 0/i # WiFi startup for Raspberry Pi' /etc/rc.local
+                sed -i '/exit 0/i sleep 15 && wifi up' /etc/rc.local
+            fi
+            
+            if ! grep -q "wifi up" /etc/crontabs/root; then
+                echo "Setting up wireless refresh cron job"
+                echo "# WiFi maintenance for Raspberry Pi" >> /etc/crontabs/root
+                echo "0 */6 * * * wifi down && sleep 10 && wifi up" >> /etc/crontabs/root
+                /etc/init.d/cron restart
+            fi
+            
+            echo "WiFi maintenance configured successfully for $PI_MODEL"
+        else
+            echo "Raspberry Pi detected, but not model 3 or 4 - not configure WiFi"
+        fi
+    else
+        echo "Not a Raspberry Pi device - not configure WiFi"
+    fi
+else
+    echo "No wireless devices detected - cannot configure WiFi"
 fi
 
 # remove huawei me909s and dw5821e usb-modeswitch"
