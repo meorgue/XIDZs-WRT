@@ -6,7 +6,7 @@ on:
       release_branch:
         description: "Select the release branch:"
         required: true
-        default: "openwrt:24.10.1"
+        default: "immortalwrt:24.10.0"
         type: choice
         options:
           - openwrt:24.10.1
@@ -548,7 +548,7 @@ jobs:
           
       - name: Mod SDCard
         id: modsdcard
-        if: steps.repack.outputs.status == 'success'
+        if: steps.rep.outputs.status == 'success'
         run: |
           cd ${WORKING_DIR}
           chmod +x scripts/MODSDCARD.sh
