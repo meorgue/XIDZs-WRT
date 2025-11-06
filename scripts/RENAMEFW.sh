@@ -109,8 +109,8 @@ rename_firmware() {
         "-s905x4-|s905x4_AT01-Ax810"
         
         # Amlogic Ophub
-        "_s905x_|s905x_HG680P-ON"
-        "_s905x-b860h_|s905x_B860H-ON"
+        "_s905x_|s905x_HG680P-WIFION"
+        "_s905x-b860h_|s905x_B860H-WIFION"
         "_s905d_|s905d_Phicomm-N1"
         "_s905l-mg101_|s905l_Mibox-4"
         "_s905l_|s905l_B860AV2"
