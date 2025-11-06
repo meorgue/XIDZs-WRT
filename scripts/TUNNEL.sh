@@ -52,6 +52,13 @@ case "$1" in
     openclash)
         setup_openclash
         ;;
+    nikki)
+        setup_nikki
+        ;;
+    nikki-passwall)
+        setup_nikki
+        setup_passwall
+        ;;
     openclash-nikki)
         setup_openclash
         setup_nikki
@@ -64,7 +71,7 @@ case "$1" in
     no-tunnel)
         ;;
     *)
-        log "INFO" "Invalid option. Usage: $0 {openclash|openclash-nikki|openclash-nikki-passwall|no-tunnel}"
+        log "INFO" "Invalid option. Usage: $0 {openclash|nikki|nikki-passwall|openclash-nikki|openclash-nikki-passwall|no-tunnel}"
         exit 1
         ;;
 esac
