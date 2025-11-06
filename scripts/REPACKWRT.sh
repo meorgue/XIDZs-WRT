@@ -56,8 +56,8 @@ repackwrt() {
     fi
 
     # Define constants
-    local readonly OPHUB_REPO="https://github.com/xidz-repo/amlogic-s9xxx-openwrt/archive/refs/heads/main.zip"
-    local readonly ULO_REPO="https://github.com/xidz-repo/ULO-Builder/archive/refs/heads/main.zip"
+    local readonly OPHUB_REPO="https://github.com/chanz-x/amlogic-s9xxx-openwrt/archive/refs/heads/main.zip"
+    local readonly ULO_REPO="https://github.com/chanz-x/ULO-Builder/archive/refs/heads/main.zip"
     local readonly work_dir="$GITHUB_WORKSPACE/$WORKING_DIR"
     
     # Setup directories based on builder type
@@ -132,7 +132,7 @@ repackwrt() {
     local device_output_dir
     if [[ "$builder_type" == "--ophub" ]]; then
         log "INFO" "Running OphubBuilder..."
-        if ! sudo ./remake -b "${target_board}" -k "${target_kernel}" -s 512; then
+        if ! sudo ./remake -b "${target_board}" -k "${target_kernel}" -s 1024; then
             error_msg "OphubBuilder execution failed"
             exit 1
         fi
