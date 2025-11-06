@@ -16,17 +16,16 @@ MISC=""
 EXCLUDED=""
 
 # Core system + Web Server + LuCI
-PACKAGES+=" libc bash block-mount coreutils-base64 coreutils-sleep coreutils-stat coreutils-stty \
-curl wget-ssl tar unzip parted losetup uhttpd uhttpd-mod-ubus luci luci-base \
-luci-mod-admin-full luci-lib-ip luci-compat luci-ssl"
+PACKAGES+=" libc bash block-mount coreutils-base64 coreutils-sleep coreutils-stat coreutils-stty curl \
+wget-ssl parted losetup tar unzip uhttpd uhttpd-mod-ubus luci luci-base luci-mod-admin-full luci-lib-ip luci-compat luci-ssl"
 
-# USB + LAN Networking Drivers And Modem Tools
+# USB + LAN Networking Drivers
 PACKAGES+=" kmod-usb-net-rtl8150 kmod-usb-net-rtl8152 kmod-usb-net-asix kmod-usb-net-asix-ax88179"
-PACKAGES+=" kmod-mii kmod-usb-net kmod-usb-wdm kmod-usb-net-rndis kmod-usb-net-cdc-ether kmod-usb-net-cdc-ncm kmod-usb-net-sierrawireless \
-kmod-usb-net-qmi-wwan uqmi kmod-usb-acm kmod-usb-net-huawei-cdc-ncm kmod-usb-net-cdc-mbim umbim \
-kmod-usb-serial-option kmod-usb-serial kmod-usb-serial-wwan kmod-usb-serial-qualcomm kmod-usb-serial-sierrawireless modemmanager luci-proto-modemmanager \
-mbim-utils qmi-utils kmod-usb-uhci kmod-usb-ohci kmod-usb2 kmod-usb3 usb-modeswitch usbutils \
-luci-proto-qmi luci-proto-ncm xmm-modem luci-proto-xmm kmod-nls-utf8 kmod-macvlan"
+PACKAGES+=" kmod-mii kmod-usb-net kmod-usb-wdm kmod-usb-net-rndis kmod-usb-net-cdc-ether kmod-usb-net-sierrawireless kmod-usb-uhci \
+kmod-usb-net-huawei-cdc-ncm kmod-usb-acm kmod-usb-net-cdc-ncm luci-proto-ncm kmod-usb-ohci kmod-usb-net-qmi-wwan uqmi luci-proto-qmi \
+kmod-usb2 kmod-usb-ehci kmod-usb3 kmod-usb-net-cdc-mbim umbim kmod-usb-serial kmod-usb-serial-option kmod-usb-serial-sierrawireless \
+kmod-usb-serial-wwan kmod-usb-serial-qualcomm modemmanager luci-proto-modemmanager qmi-utils mbim-utils \
+usb-modeswitch kmod-nls-utf8 usbutils kmod-macvlan xmm-modem luci-proto-xmm"
 
 # Modem Management Tools
 PACKAGES+=" modeminfo luci-app-modeminfo atinout modemband luci-app-modemband sms-tool luci-app-sms-tool-js picocom minicom"
@@ -46,6 +45,10 @@ add_tunnel_packages() {
     local option="$1"
     if [[ "$option" == "openclash" ]]; then
         PACKAGES+=" $OPENCLASH4"
+    elif [[ "$option" == "nikki" ]]; then
+        PACKAGES+=" $NIKKI"
+    elif [[ "$option" == "nikki-passwall" ]]; then
+        PACKAGES+=" $NIKKI $PASSWALL"
     elif [[ "$option" == "openclash-nikki" ]]; then
         PACKAGES+=" $OPENCLASH4 $NIKKI"
     elif [[ "$option" == "openclash-nikki-passwall" ]]; then
@@ -69,14 +72,14 @@ PACKAGES+=" tailscale luci-app-tailscale"
 PACKAGES+=" speedtest-cli luci-app-eqosplus"
 
 # Theme + UI
-PACKAGES+=" luci-theme-rtawrt luci-theme-argon"  #luci-theme-alpha4"
+PACKAGES+=" luci-theme-rtawrt luci-theme-argon luci-theme-alpha"
 
 # PHP8
 PACKAGES+=" php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo php8-mod-zip php8-mod-iconv php8-mod-mbstring"
 
 # Misc Packages + Custom Packages
-MISC+=" zoneinfo-core zoneinfo-asia jq httping adb openssh-sftp-server zram-swap htop \
-screen lolcat atc-fib-l850_gl atc-fib-fm350_gl luci-proto-atc luci-app-mmconfig luci-app-droidnet luci-app-ipinfo \
+MISC+=" zoneinfo-core zoneinfo-asia jq httping adb openssh-sftp-server zram-swap htop screen \
+lolcat atc-fib-l8x0_gl atc-fib-fm350_gl luci-proto-atc luci-app-mmconfig luci-app-droidnet luci-app-ipinfo \
 luci-app-lite-watchdog luci-app-poweroffdevice luci-app-ramfree luci-app-tinyfm luci-app-ttyd luci-app-3ginfo-lite"
 
 # Profil Name
