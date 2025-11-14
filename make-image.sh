@@ -16,22 +16,41 @@ MISC=""
 EXCLUDED=""
 
 # Core system + Web Server + LuCI
-PACKAGES+=" libc bash block-mount coreutils-base64 coreutils-sleep coreutils-stat coreutils-stty curl \
-wget-ssl parted losetup tar unzip uhttpd uhttpd-mod-ubus luci luci-base luci-mod-admin-full luci-lib-ip luci-compat luci-ssl"
+PACKAGES+=" libc bash block-mount coreutils-base64 coreutils-sleep coreutils-stat coreutils-stty \
+curl wget-ssl parted losetup tar unzip uhttpd uhttpd-mod-ubus \
+luci luci-base luci-mod-admin-full luci-lib-ip luci-compat luci-ssl"
 
 # USB + LAN Networking Drivers
-PACKAGES+=" kmod-usb-net-rtl8150 kmod-usb-net-rtl8152 kmod-usb-net-asix kmod-usb-net-asix-ax88179"
-PACKAGES+=" kmod-mii kmod-usb-net kmod-usb-wdm kmod-usb-net-rndis kmod-usb-net-cdc-ether kmod-usb-net-sierrawireless kmod-usb-uhci \
-kmod-usb-net-huawei-cdc-ncm kmod-usb-acm kmod-usb-net-cdc-ncm luci-proto-ncm kmod-usb-ohci kmod-usb-net-qmi-wwan uqmi luci-proto-qmi \
-kmod-usb2 kmod-usb-ehci kmod-usb3 kmod-usb-net-cdc-mbim umbim kmod-usb-serial kmod-usb-serial-option kmod-usb-serial-sierrawireless \
-kmod-usb-serial-wwan kmod-usb-serial-qualcomm modemmanager luci-proto-modemmanager qmi-utils mbim-utils \
-usb-modeswitch kmod-nls-utf8 usbutils kmod-macvlan xmm-modem luci-proto-xmm"
+PACKAGES+=" kmod-usb-ohci kmod-usb-uhci kmod-usb2 kmod-usb-ehci kmod-usb3 kmod-usb-xhci-hcd \
+kmod-mii kmod-usb-net kmod-usb-net-rtl8150 kmod-usb-net-rtl8152 kmod-usb-net-asix kmod-usb-net-asix-ax88179 \
+kmod-usb-wdm kmod-usb-net-rndis kmod-usb-net-cdc-ether kmod-usb-net-cdc-ncm kmod-usb-acm kmod-usb-net-huawei-cdc-ncm \
+kmod-usb-net-cdc-mbim umbim kmod-usb-net-sierrawireless kmod-usb-net-qmi-wwan uqmi luci-proto-qmi \
+kmod-usb-serial-option kmod-usb-serial kmod-usb-serial-wwan kmod-usb-serial-qualcomm kmod-usb-serial-sierrawireless modemmanager luci-proto-modemmanager \
+mbim-utils qmi-utils usbutils luci-proto-ncm kmod-nls-utf8 usb-modeswitch kmod-macvlan xmm-modem luci-proto-xmm"
+
+# Storage - NAS
+PACKAGES+=" luci-app-diskman kmod-usb-storage kmod-usb-storage-uas ntfs-3g"
 
 # Modem Management Tools
 PACKAGES+=" modeminfo luci-app-modeminfo atinout modemband luci-app-modemband sms-tool luci-app-sms-tool-js picocom minicom"
 
-# ModemInfo Serial Support
+# ModemInfo Serial
 PACKAGES+=" modeminfo-serial-dell modeminfo-serial-fibocom modeminfo-serial-sierra modeminfo-serial-tw modeminfo-serial-xmm"
+
+# Monitoring
+PACKAGES+=" internet-detector internet-detector-mod-modem-restart luci-app-internet-detector luci-app-netmonitor"
+
+# Remote Access
+PACKAGES+=" tailscale luci-app-tailscale"
+
+# Bandwidth + Speedtest
+PACKAGES+=" speedtest-cli luci-app-eqosplus"
+
+# Theme + UI
+PACKAGES+=" luci-theme-rtawrt luci-theme-argon luci-theme-alpha"
+
+# PHP8
+PACKAGES+=" php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo php8-mod-zip php8-mod-iconv php8-mod-mbstring"
 
 # VPN Tunnel
 OPENCLASH3="coreutils-nohup bash dnsmasq-full iptables ca-certificates ipset ip-full iptables-mod-tproxy iptables-mod-extra libcap libcap-bin ruby ruby-yaml kmod-tun luci-app-openclash"
@@ -58,24 +77,6 @@ add_tunnel_packages() {
         :
     fi
 }
-
-# Storage - NAS
-PACKAGES+=" luci-app-diskman kmod-usb-storage kmod-usb-storage-uas ntfs-3g"
-
-# Monitoring
-PACKAGES+=" internet-detector internet-detector-mod-modem-restart luci-app-internet-detector luci-app-netmonitor"
-
-# Remote Access
-PACKAGES+=" tailscale luci-app-tailscale"
-
-# Bandwidth + Speedtest
-PACKAGES+=" speedtest-cli luci-app-eqosplus"
-
-# Theme + UI
-PACKAGES+=" luci-theme-rtawrt luci-theme-argon luci-theme-alpha"
-
-# PHP8
-PACKAGES+=" php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo php8-mod-zip php8-mod-iconv php8-mod-mbstring"
 
 # Misc Packages + Custom Packages
 MISC+=" zoneinfo-core zoneinfo-asia jq httping adb openssh-sftp-server zram-swap htop screen \
